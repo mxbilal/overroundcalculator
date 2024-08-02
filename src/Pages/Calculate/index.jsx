@@ -109,6 +109,7 @@ const CalculatePage = () => {
             <tr className="bg-green-100 font-bold">
               <td className="border px-4 py-2">Total</td>
               <td className="border px-4 py-2"></td>
+              <td className="border px-4 py-2"></td>
               <td className="border px-4 py-2">
                 {calculateTotalPercentage().toFixed(2)}%
               </td>
