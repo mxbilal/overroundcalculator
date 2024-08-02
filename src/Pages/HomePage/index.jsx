@@ -12,6 +12,45 @@ const cleanData = (data) => {
 
   return results;
 };
+function cleanupData(data) {
+  // Regular expression to match numbers, fractions, and non-alphabetic characters
+  const numberRegex = /^\d+(\.\d+)?$/;
+  const fractionRegex = /^\d+\/\d+$/;
+  const keyCleanupRegex = /\s*\d+(\.\d+)?|\d+\/\d+|\W+\s*/g;
+
+  const cleanedData = {};
+
+  for (let key in data) {
+    // Remove keys that are purely numbers, fractions, or consist only of non-alphabetic characters
+    if (numberRegex.test(key) || fractionRegex.test(key) || /^\W+$/.test(key)) {
+      continue;
+    }
+
+    // Clean up keys that contain numbers or non-alphabetic characters
+    let newKey = key.replace(keyCleanupRegex, "").trim();
+
+    // If the cleaned key is non-empty, add it to the cleaned data
+    if (newKey !== "") {
+      cleanedData[newKey] = data[key];
+    }
+  }
+
+  return cleanedData;
+}
+function isNumber(value) {
+  // Regular expression to match a number (integer or decimal)
+  const numberRegex = /^\d+(\.\d+)?$/;
+  // Regular expression to match a fraction (e.g., 1/2, 3/4)
+  const fractionRegex = /^\d+\/\d+$/;
+
+  // Check if the value matches either regex
+  if (numberRegex.test(value) || fractionRegex.test(value)) {
+    return true;
+  }
+
+  return false;
+}
+
 const validateData = (data) => {
   const lines = data.trim().split("\n");
   let results = {};
@@ -20,11 +59,14 @@ const validateData = (data) => {
     const line = lines[i].trim();
     if (isNaN(line) && line !== "") {
       const name = line;
-      const firstValue = lines[i + 1].split("\t")[0];
+      const firstValue = isNumber(lines[i + 1].split("\t")[0])
+        ? lines[i + 1].split("\t")[0]
+        : lines[i + 2].split("\t")[0];
+
       results[name] = firstValue;
     }
   }
-  return cleanData(results);
+  return cleanupData(results);
 };
 
 const HomePage = () => {
@@ -43,7 +85,6 @@ const HomePage = () => {
       return;
     }
     setError(false);
-
     navigate("/calculate", { state: { data: result } });
   };
   return (

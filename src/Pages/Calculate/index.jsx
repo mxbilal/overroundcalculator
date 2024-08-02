@@ -82,6 +82,7 @@ const CalculatePage = () => {
         <table className="w-full text-left">
           <thead>
             <tr className="bg-gray-200">
+              <th className="px-4 py-2">ID</th>
               <th className="px-4 py-2">Name</th>
               <th className="px-4 py-2">Odds</th>
               <th className="px-4 py-2">Percentage</th>
@@ -90,6 +91,7 @@ const CalculatePage = () => {
           <tbody>
             {oddsData.map((item, index) => (
               <tr key={index} className="hover:bg-gray-100">
+                <td className="border px-4 py-2">{index + 1}</td>
                 <td className="border px-4 py-2">{item.name}</td>
                 <td className="border px-4 py-2">
                   <input
