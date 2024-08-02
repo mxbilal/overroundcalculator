@@ -22,7 +22,6 @@ const calculatePercentage = (data) => {
       percentage: parseFloat(percentage.toFixed(2)),
     });
   }
-
   return results;
 };
 
@@ -31,6 +30,7 @@ const CalculatePage = () => {
   const navigate = useNavigate();
   const { data } = location.state || { data: [] };
   const [oddsData, setOddsData] = useState([]);
+  const [firstTry, setFirstTry] = useState(false);
 
   const handleOddsChange = (index, newOdds) => {
     const newData = [...oddsData];
@@ -71,7 +71,11 @@ const CalculatePage = () => {
   useEffect(() => {
     if (data) {
       const result = calculatePercentage(data);
-      setOddsData(result);
+
+      setOddsData(
+        firstTry ? result : result.sort((a, b) => b.percentage - a.percentage)
+      );
+      setFirstTry(true);
     }
   }, [data]);
 
