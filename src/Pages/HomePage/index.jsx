@@ -59,8 +59,22 @@ const validateData = (data) => {
   for (let i = 0; i < lines.length - 1; i++) {
     const line = lines[i].trim();
     if (isNaN(line) && line !== "") {
+      let pr = i > 0 ? lines[i - 1] : null;
+      let prev =
+        i < 1 ? false : !isNumber(lines[i - 1] === "" ? 0 : lines[i - 1]);
+      console.log(
+        "prev",
+        line,
+        "--",
+        JSON.stringify(pr),
+        isNumber(pr),
+        "---",
+        prev
+      );
       const name = line;
-      const firstValue = isNumber(lines[i + 1].split("\t")[0])
+      const firstValue = prev
+        ? null
+        : isNumber(lines[i + 1].split("\t")[0])
         ? lines[i + 1]
           ? lines[i + 1].split("\t")[0]
           : null
