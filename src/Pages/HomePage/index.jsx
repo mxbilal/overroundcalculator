@@ -90,8 +90,7 @@ const HomePage = () => {
       return;
     }
     setError(false);
-    // navigate("/calculate", { state: { data: result } });
-    console.log(result);
+    navigate("/calculate", { state: { data: result } });
   };
   return (
     <div className="flex flex-col justify-center gap-4 items-center h-3/4 bg-gray-100 p-2">
