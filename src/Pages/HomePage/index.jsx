@@ -30,7 +30,8 @@ function cleanupData(data) {
     let newKey = key.replace(keyCleanupRegex, "").trim();
 
     // If the cleaned key is non-empty, add it to the cleaned data
-    if (newKey !== "") {
+    const value = data[key];
+    if (newKey !== "" && value !== null && isNumber(value)) {
       cleanedData[newKey] = data[key];
     }
   }
@@ -60,8 +61,12 @@ const validateData = (data) => {
     if (isNaN(line) && line !== "") {
       const name = line;
       const firstValue = isNumber(lines[i + 1].split("\t")[0])
-        ? lines[i + 1].split("\t")[0]
-        : lines[i + 2].split("\t")[0];
+        ? lines[i + 1]
+          ? lines[i + 1].split("\t")[0]
+          : null
+        : lines[i + 2]
+        ? lines[i + 2].split("\t")[0]
+        : null;
 
       results[name] = firstValue;
     }
@@ -85,7 +90,8 @@ const HomePage = () => {
       return;
     }
     setError(false);
-    navigate("/calculate", { state: { data: result } });
+    // navigate("/calculate", { state: { data: result } });
+    console.log(result);
   };
   return (
     <div className="flex flex-col justify-center gap-4 items-center h-3/4 bg-gray-100 p-2">
