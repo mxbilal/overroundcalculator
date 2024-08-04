@@ -110,7 +110,7 @@ const HomePage = () => {
   let navigate = useNavigate();
   const [data, setData] = useState("");
   const [error, setError] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(1);
+  const [selectedOption, setSelectedOption] = useState(2);
 
   const handleOptionChange = (e) => {
     setSelectedOption(Number(e.target.value));
@@ -135,22 +135,22 @@ const HomePage = () => {
         <label className="flex items-center text-gray-700">
           <input
             type="radio"
+            value={2}
+            checked={selectedOption === 2}
+            onChange={handleOptionChange}
+            className="form-radio h-5 w-5 text-blue-600 transition duration-150 ease-in-out"
+          />
+          <span className="ml-2">Simple Odds Data</span>
+        </label>
+        <label className="flex items-center text-gray-700">
+          <input
+            type="radio"
             value={1}
             checked={selectedOption === 1}
             onChange={handleOptionChange}
             className="form-radio h-5 w-5 text-blue-600 transition duration-150 ease-in-out"
           />
           <span className="ml-2">Speed Data</span>
-        </label>
-        <label className="flex items-center text-gray-700">
-          <input
-            type="radio"
-            value={2}
-            checked={selectedOption === 2}
-            onChange={handleOptionChange}
-            className="form-radio h-5 w-5 text-blue-600 transition duration-150 ease-in-out"
-          />
-          <span className="ml-2">Other</span>
         </label>
       </div>
 
