@@ -1,34 +1,81 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const calculatePercentage = (data) => {
+const calculatePercentage = (data, op) => {
   let results = [];
+  if (op === 1) {
+    let speedData = data.map((dt) => {
+      let value = dt.odds;
+      let percentage;
 
-  for (let key in data) {
-    let value = data[key];
-    let percentage;
+      if (value.includes("/")) {
+        let [numerator, denominator] = value.split("/").map(Number);
+        percentage = (denominator / (denominator + numerator)) * 100;
+      } else {
+        let numberValue = Number(value);
+        percentage = (1 / numberValue) * 100;
+      }
 
-    if (value.includes("/")) {
-      let [numerator, denominator] = value.split("/").map(Number);
-      percentage = (denominator / (denominator + numerator)) * 100;
-    } else {
-      let numberValue = Number(value);
-      percentage = (1 / numberValue) * 100;
-    }
-
-    results.push({
-      name: key,
-      odds: value,
-      percentage: parseFloat(percentage.toFixed(2)),
+      return { ...dt, percentage: parseFloat(percentage.toFixed(2)) };
     });
-  }
+    results.push(...speedData);
+  } else
+    for (let key in data) {
+      let value = data[key];
+      let percentage;
+
+      if (value.includes("/")) {
+        let [numerator, denominator] = value.split("/").map(Number);
+        percentage = (denominator / (denominator + numerator)) * 100;
+      } else {
+        let numberValue = Number(value);
+        percentage = (1 / numberValue) * 100;
+      }
+
+      results.push({
+        name: key,
+        odds: value,
+        percentage: parseFloat(percentage.toFixed(2)),
+      });
+    }
   return results;
+};
+const guessWinner = (data) => {
+  // Convert odds to a number and sort horses by odds
+  const sortedByOdds = data
+    .map((horse) => ({
+      ...horse,
+      odds: parseFloat(horse.odds),
+    }))
+    .sort((a, b) => a.odds - b.odds);
+
+  // Filter out horses with incomplete data
+  const filteredHorses = sortedByOdds.filter(
+    (horse) => horse.speed !== "-" && horse.best1 !== "-" && horse.best2 !== "-"
+  );
+
+  // If no horses with complete data, return horse with best odds
+  if (filteredHorses.length === 0) {
+    return sortedByOdds[0].name;
+  }
+
+  // Calculate a score based on speed and best times
+  const scoredHorses = filteredHorses.map((horse) => ({
+    ...horse,
+    score: horse.speed + (horse.best1 + horse.best2) / 2,
+  }));
+
+  // Sort by score
+  scoredHorses.sort((a, b) => b.score - a.score);
+
+  // Return horse with highest score
+  return scoredHorses;
 };
 
 const CalculatePage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { data } = location.state || { data: [] };
+  const { data, option } = location.state || { data: [] };
   const [oddsData, setOddsData] = useState([]);
   const [firstTry, setFirstTry] = useState(false);
 
@@ -70,7 +117,7 @@ const CalculatePage = () => {
 
   useEffect(() => {
     if (data) {
-      const result = calculatePercentage(data);
+      const result = calculatePercentage(data, option);
 
       setOddsData(
         firstTry ? result : result.sort((a, b) => b.percentage - a.percentage)
@@ -88,6 +135,13 @@ const CalculatePage = () => {
             <tr className="bg-gray-200">
               <th className="px-4 py-2">ID</th>
               <th className="px-4 py-2">Name</th>
+              {option === 1 && (
+                <>
+                  <th>Speed</th>
+                  <th>Best Speed 1</th>
+                  <th>Best Speed 2</th>
+                </>
+              )}
               <th className="px-4 py-2">Odds</th>
               <th className="px-4 py-2">Percentage</th>
             </tr>
@@ -97,6 +151,13 @@ const CalculatePage = () => {
               <tr key={index} className="hover:bg-gray-100">
                 <td className="border px-4 py-2">{index + 1}</td>
                 <td className="border px-4 py-2">{item.name}</td>
+                {option === 1 && (
+                  <>
+                    <td className="border px-4 py-2">{item.speed}</td>
+                    <td className="border px-4 py-2">{item.best1}</td>
+                    <td className="border px-4 py-2">{item.best2}</td>
+                  </>
+                )}
                 <td className="border px-4 py-2">
                   <input
                     type="text"
@@ -114,6 +175,13 @@ const CalculatePage = () => {
               <td className="border px-4 py-2">Total</td>
               <td className="border px-4 py-2"></td>
               <td className="border px-4 py-2"></td>
+              {option === 1 && (
+                <>
+                  <td className="border px-4 py-2"></td>
+                  <td className="border px-4 py-2"></td>
+                  <td className="border px-4 py-2"></td>
+                </>
+              )}
               <td className="border px-4 py-2">
                 {calculateTotalPercentage().toFixed(2)}%
               </td>
