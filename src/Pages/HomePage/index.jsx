@@ -39,13 +39,21 @@ function cleanupData(data) {
   return cleanedData;
 }
 function isNumber(value) {
-  // Regular expression to match a number (integer or decimal)
+  // Regular expression to match an integer or decimal number (e.g., 4, 3.14)
   const numberRegex = /^\d+(\.\d+)?$/;
+
   // Regular expression to match a fraction (e.g., 1/2, 3/4)
   const fractionRegex = /^\d+\/\d+$/;
 
-  // Check if the value matches either regex
-  if (numberRegex.test(value) || fractionRegex.test(value)) {
+  // Regular expression to match a percentage (e.g., 5%)
+  const percentageRegex = /^\d+(\.\d+)?%$/;
+
+  // Check if the value matches any of the regular expressions
+  if (
+    numberRegex.test(value) ||
+    fractionRegex.test(value) ||
+    percentageRegex.test(value)
+  ) {
     return true;
   }
 
