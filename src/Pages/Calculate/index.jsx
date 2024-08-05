@@ -56,7 +56,7 @@ const guessWinner = (data) => {
 
   // If no horses with complete data, return horse with best odds
   if (filteredHorses.length === 0) {
-    return sortedByOdds[0].name;
+    return sortedByOdds;
   }
 
   // Calculate a score based on speed and best times
@@ -139,7 +139,7 @@ const CalculatePage = () => {
       setFirstTry(true);
     }
   }, [data]);
-  console.log(111, oddsData);
+  console.log(111, guessWinner(oddsData ));
   return (
     <div className="flex flex-col items-center p-6 bg-gray-100 min-h-screen">
       <h1 className="text-2xl font-bold mb-4">Calculation Result</h1>

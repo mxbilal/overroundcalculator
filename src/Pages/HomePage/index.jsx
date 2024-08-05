@@ -84,7 +84,7 @@ const validateData = (data) => {
       results[name] = firstValue;
     }
   }
-  return results;
+  return cleanupData(results);
 };
 function validateSpeedData(data) {
   const rows = data.trim().split("\n");
