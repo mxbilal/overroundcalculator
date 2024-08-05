@@ -72,6 +72,16 @@ const guessWinner = (data) => {
   return scoredHorses;
 };
 
+function sortData(data) {
+  return data.sort((a, b) => {
+    // Handle cases where speed is "-"
+    if (a.speed === "-") return 1;
+    if (b.speed === "-") return -1;
+
+    // Compare speeds in descending order
+    return a.speed - b.speed;
+  });
+}
 const CalculatePage = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -120,12 +130,16 @@ const CalculatePage = () => {
       const result = calculatePercentage(data, option);
 
       setOddsData(
-        firstTry ? result : result.sort((a, b) => b.percentage - a.percentage)
+        option === 1
+          ? sortData(result)
+          : firstTry
+          ? result
+          : result.sort((a, b) => b.percentage - a.percentage)
       );
       setFirstTry(true);
     }
   }, [data]);
-
+  console.log(111, oddsData);
   return (
     <div className="flex flex-col items-center p-6 bg-gray-100 min-h-screen">
       <h1 className="text-2xl font-bold mb-4">Calculation Result</h1>
