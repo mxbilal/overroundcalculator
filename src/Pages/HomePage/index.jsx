@@ -2,15 +2,13 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const cleanData = (data) => {
-  let results = {};
-
-  for (let key in data) {
-    if (!key.includes("\t")) {
-      results[key] = data[key];
-    }
-  }
-
-  return results;
+  return data.filter((item) => {
+    // Check if any property value in the item is undefined
+    return (
+      Object.values(item).every((value) => value !== undefined) &&
+      isNumber(item.odds)
+    );
+  });
 };
 function cleanupData(data) {
   // Regular expression to match numbers, fractions, and non-alphabetic characters
@@ -103,7 +101,7 @@ function validateSpeedData(data) {
     });
   });
 
-  return result;
+  return cleanData(result);
 }
 
 const HomePage = () => {
@@ -127,7 +125,8 @@ const HomePage = () => {
       return;
     }
     setError(false);
-    navigate("/calculate", { state: { data: result, option: selectedOption } });
+    // navigate("/calculate", { state: { data: result, option: selectedOption } });
+    console.log(result);
   };
   return (
     <div className="flex flex-col justify-center gap-4 items-center h-3/4 bg-gray-100 p-2">
