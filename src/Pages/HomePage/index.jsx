@@ -66,9 +66,27 @@ const validateData = (data) => {
     const line = lines[i].trim();
     if (isNaN(line) && line !== "") {
       let pr = i > 0 ? lines[i - 1] : null;
-
       let prev =
-        i < 1 ? false : !isNumber(lines[i - 1] === "" ? 0 : lines[i - 1]);
+        i < 1
+          ? false
+          : !isNumber(
+              lines[i - 1] === ""
+                ? 0
+                : lines[i - 1]
+                    .split("\t")
+                    .join("")
+                    .split("/")
+                    .join("")
+                    .split(" ")
+                    .join("")
+            );
+      console.log(
+        JSON.stringify(line),
+        "--",
+        prev,
+        "--",
+        JSON.stringify(lines[i - 1])
+      );
       const name = line;
       const firstValue = prev
         ? null
@@ -83,7 +101,7 @@ const validateData = (data) => {
       results[name] = firstValue;
     }
   }
-  return cleanupData(results);
+  return results;
 };
 function validateSpeedData(data) {
   const rows = data.trim().split("\n");
@@ -127,8 +145,8 @@ const HomePage = () => {
       return;
     }
     setError(false);
-    navigate("/calculate", { state: { data: result, option: selectedOption } });
-    // console.log(result);
+    // navigate("/calculate", { state: { data: result, option: selectedOption } });
+    console.log(result);
   };
   return (
     <div className="flex flex-col justify-center gap-4 items-center h-3/4 bg-gray-100 p-2">
