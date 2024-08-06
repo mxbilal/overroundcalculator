@@ -101,7 +101,7 @@ const validateData = (data) => {
       results[name] = firstValue;
     }
   }
-  return results;
+  return cleanupData(results);
 };
 function validateSpeedData(data) {
   const rows = data.trim().split("\n");
@@ -145,7 +145,7 @@ const HomePage = () => {
       return;
     }
     setError(false);
-    // navigate("/calculate", { state: { data: result, option: selectedOption } });
+    navigate("/calculate", { state: { data: result, option: selectedOption } });
     console.log(result);
   };
   return (
