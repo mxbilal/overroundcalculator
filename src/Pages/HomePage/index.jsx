@@ -64,7 +64,6 @@ const validateData = (data) => {
 
   for (let i = 0; i < lines.length - 1; i++) {
     const line = lines[i].trim();
-    console.log(123, line, isNaN(line), JSON.stringify(line));
     if (isNaN(line) && line !== "") {
       let pr = i > 0 ? lines[i - 1] : null;
 
@@ -95,6 +94,7 @@ function validateSpeedData(data) {
       .split("\t")
       .map((item) => item.trim());
     result.push({
+      id: id || "-",
       name,
       speed: speed === "-" ? "-" : parseFloat(speed),
       best1: best1 === "-" ? "-" : parseFloat(best1),
@@ -128,7 +128,7 @@ const HomePage = () => {
     }
     setError(false);
     navigate("/calculate", { state: { data: result, option: selectedOption } });
-    console.log(result);
+    // console.log(result);
   };
   return (
     <div className="flex flex-col justify-center gap-4 items-center h-3/4 bg-gray-100 p-2">

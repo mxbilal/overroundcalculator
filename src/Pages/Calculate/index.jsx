@@ -40,7 +40,7 @@ const calculatePercentage = (data, op) => {
     }
   return results;
 };
-const guessWinner = (data) => {
+const guessWinnerold = (data) => {
   // Convert odds to a number and sort horses by odds
   const sortedByOdds = data
     .map((horse) => ({
@@ -71,7 +71,27 @@ const guessWinner = (data) => {
   // Return horse with highest score
   return scoredHorses;
 };
+const guessWinner = (data) => {
+  if (data.length === 0) return;
+  const scoredHorses = data.map((horse) => {
+    const speed = horse.speed === "-" ? 0 : horse.speed;
+    const best1 = horse.best1 === "-" ? Infinity : horse.best1;
+    const best2 = horse.best2 === "-" ? Infinity : horse.best2;
+    const odds = parseFloat(horse.odds);
+    const percentage = horse.percentage === "-" ? 0 : horse.percentage;
 
+    // Calculate a composite score considering all factors
+    const score = speed * 2 + (best1 + best2) / 2 - odds * 2 + percentage * 0.5;
+
+    return { ...horse, score };
+  });
+
+  // Sort horses by the calculated score in descending order
+  scoredHorses.sort((a, b) => b.score - a.score);
+
+  // Return horse with the highest score
+  return scoredHorses;
+};
 function sortData(data) {
   return data.sort((a, b) => {
     // Handle cases where speed is "-"
@@ -139,7 +159,7 @@ const CalculatePage = () => {
       setFirstTry(true);
     }
   }, [data]);
-  console.log(111, guessWinner(oddsData ));
+  console.log(111, guessWinner(oddsData));
   return (
     <div className="flex flex-col items-center p-6 bg-gray-100 min-h-screen">
       <h1 className="text-2xl font-bold mb-4">Calculation Result</h1>
@@ -163,25 +183,27 @@ const CalculatePage = () => {
           <tbody>
             {oddsData.map((item, index) => (
               <tr key={index} className="hover:bg-gray-100">
-                <td className="border px-4 py-2">{index + 1}</td>
-                <td className="border px-4 py-2">{item.name}</td>
+                <td className="border px-4 py-2">
+                  {option === 1 ? item?.id : index + 1}
+                </td>
+                <td className="border px-4 py-2">{item?.name}</td>
                 {option === 1 && (
                   <>
-                    <td className="border px-4 py-2">{item.speed}</td>
-                    <td className="border px-4 py-2">{item.best1}</td>
-                    <td className="border px-4 py-2">{item.best2}</td>
+                    <td className="border px-4 py-2">{item?.speed}</td>
+                    <td className="border px-4 py-2">{item?.best1}</td>
+                    <td className="border px-4 py-2">{item?.best2}</td>
                   </>
                 )}
                 <td className="border px-4 py-2">
                   <input
                     type="text"
-                    value={item.odds}
+                    value={item?.odds}
                     onChange={(e) => handleOddsChange(index, e.target.value)}
                     className="w-full border rounded p-2"
                   />
                 </td>
                 <td className="border px-4 py-2">
-                  {item.percentage !== "" ? `${item.percentage}%` : ""}
+                  {item?.percentage !== "" ? `${item?.percentage}%` : ""}
                 </td>
               </tr>
             ))}
