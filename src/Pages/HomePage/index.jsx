@@ -174,7 +174,7 @@ const HomePage = () => {
       </div>
 
       <textarea
-        className="w-full sm:w-1/2 h-1/2 p-2 sm:p-4 border border-gray-300 rounded-lg resize-none focus:outline-none focus:border-blue-500"
+        className="w-full sm:w-1/2 h-1/2 p-2 sm:p-4 border bg-blue-600 text-white  border-gray-300 rounded-lg resize-none focus:outline-none focus:border-blue-500"
         placeholder="Paste your data here..."
         value={data}
         onChange={(e) => setData(e.target.value)}
