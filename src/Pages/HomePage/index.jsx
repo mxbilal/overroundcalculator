@@ -123,7 +123,30 @@ function validateSpeedData(data) {
 
   return cleanData(result);
 }
+const parseRaceData = (data) => {
+  const lines = data
+    .split("\n")
+    .map((line) => line.trim())
+    .filter((line) => line);
+  const result = [];
 
+  for (let i = 0; i < lines.length; i += 7) {
+    const name = lines[i + 1].includes("T:") ? lines[i] : lines[i + 1];
+    const trainer = lines[i + 2].replace("T: ", "").trim();
+    const odds = lines[i + 3];
+    const form = lines[i + 4].replace("Form: ", "").trim();
+    const lastRunTime = parseFloat(
+      lines[i + 5].replace("Last Run Time: ", "").trim()
+    );
+    const bestRecentTime = parseFloat(
+      lines[i + 6].replace("Best Recent Time: ", "").trim()
+    );
+
+    result.push({ name, trainer, odds, form, lastRunTime, bestRecentTime });
+  }
+
+  return result;
+};
 const HomePage = () => {
   let navigate = useNavigate();
   const [data, setData] = useState("");
@@ -139,7 +162,11 @@ const HomePage = () => {
       return;
     }
     let result =
-      selectedOption === 1 ? validateSpeedData(data) : validateData(data);
+      selectedOption === 1
+        ? validateSpeedData(data)
+        : selectedOption === 2
+        ? validateData(data)
+        : parseRaceData(data);
     if (Object.entries(result).length === 0) {
       setError(true);
       return;
@@ -170,6 +197,16 @@ const HomePage = () => {
             className="form-radio h-5 w-5 text-blue-600 transition duration-150 ease-in-out"
           />
           <span className="ml-2">Speed Data</span>
+        </label>
+        <label className="flex items-center text-gray-700">
+          <input
+            type="radio"
+            value={3}
+            checked={selectedOption === 3}
+            onChange={handleOptionChange}
+            className="form-radio h-5 w-5 text-blue-600 transition duration-150 ease-in-out"
+          />
+          <span className="ml-2">My Racing</span>
         </label>
       </div>
 

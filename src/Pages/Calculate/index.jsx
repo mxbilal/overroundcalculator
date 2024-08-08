@@ -3,23 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 const calculatePercentage = (data, op) => {
   let results = [];
-  if (op === 1) {
-    let speedData = data.map((dt) => {
-      let value = dt.odds;
-      let percentage;
-
-      if (value.includes("/")) {
-        let [numerator, denominator] = value.split("/").map(Number);
-        percentage = (denominator / (denominator + numerator)) * 100;
-      } else {
-        let numberValue = Number(value);
-        percentage = (1 / numberValue) * 100;
-      }
-
-      return { ...dt, percentage: parseFloat(percentage.toFixed(2)) };
-    });
-    results.push(...speedData);
-  } else
+  if (op === 2) {
     for (let key in data) {
       let value = data[key];
       let percentage;
@@ -38,6 +22,23 @@ const calculatePercentage = (data, op) => {
         percentage: parseFloat(percentage.toFixed(2)),
       });
     }
+  } else {
+    let speedData = data.map((dt) => {
+      let value = dt.odds;
+      let percentage;
+
+      if (value.includes("/")) {
+        let [numerator, denominator] = value.split("/").map(Number);
+        percentage = (denominator / (denominator + numerator)) * 100;
+      } else {
+        let numberValue = Number(value);
+        percentage = (1 / numberValue) * 100;
+      }
+
+      return { ...dt, percentage: parseFloat(percentage.toFixed(2)) };
+    });
+    results.push(...speedData);
+  }
   return results;
 };
 const guessWinnerold = (data) => {
@@ -169,6 +170,16 @@ const CalculatePage = () => {
             <tr className="bg-gray-200">
               <th className="px-4 py-2">ID</th>
               <th className="px-4 py-2">Name</th>
+              {option === 3 && (
+                <>
+                  {" "}
+                  <th className="px-4 py-2">Trainer</th>
+                  <th className="px-4 py-2">Form</th>
+                  <th className="px-4 py-2">Last Run</th>
+                  <th className="px-4 py-2">Best Run</th>{" "}
+                </>
+              )}
+
               {option === 1 && (
                 <>
                   <th>Speed</th>
@@ -194,6 +205,14 @@ const CalculatePage = () => {
                     <td className="border px-4 py-2">{item?.best2}</td>
                   </>
                 )}
+                {option === 3 && (
+                  <>
+                    <td className="border px-4 py-2">{item?.trainer}</td>
+                    <td className="border px-4 py-2">{item?.form}</td>
+                    <td className="border px-4 py-2">{item?.lastRunTime}</td>
+                    <td className="border px-4 py-2">{item?.bestRecentTime}</td>
+                  </>
+                )}
                 <td className="border px-4 py-2">
                   <input
                     type="text"
@@ -211,13 +230,15 @@ const CalculatePage = () => {
               <td className="border px-4 py-2">Total</td>
               <td className="border px-4 py-2"></td>
               <td className="border px-4 py-2"></td>
-              {option === 1 && (
-                <>
-                  <td className="border px-4 py-2"></td>
-                  <td className="border px-4 py-2"></td>
-                  <td className="border px-4 py-2"></td>
-                </>
-              )}
+              {option === 1 ||
+                (option === 3 && (
+                  <>
+                    <td className="border px-4 py-2"></td>
+                    <td className="border px-4 py-2"></td>
+                    <td className="border px-4 py-2"></td>
+                    {option === 3 && <td className="border px-4 py-2"></td>}
+                  </>
+                ))}
               <td className="border px-4 py-2">
                 {calculateTotalPercentage().toFixed(2)}%
               </td>
