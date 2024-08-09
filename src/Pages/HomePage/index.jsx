@@ -128,6 +128,7 @@ const parseRaceData = (data) => {
     .split("\n")
     .map((line) => line.trim())
     .filter((line) => line);
+  if (lines.length % 7 === 6) lines.unshift("a");
   const result = [];
 
   for (let i = 0; i < lines.length; i += 7) {
